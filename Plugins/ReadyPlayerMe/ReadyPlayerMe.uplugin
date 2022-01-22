@@ -1,0 +1,30 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "10.2",
+	"FriendlyName": "Ready Player Me",
+	"Description": "Ready Player Me Avatar SDK",
+	"Category": "Runtime",
+	"CreatedBy": "Wolf3D",
+	"CreatedByURL": "https://wolf3d.io/",
+	"DocsURL": "https://docs.readyplayer.me/",
+	"MarketplaceURL": "",
+	"SupportURL": "https://docs.readyplayer.me/integration-guides/unreal-engine-4",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "ReadyPlayerMe",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "glTFRuntime",
+			"Enabled": true
+		}
+	]
+}
