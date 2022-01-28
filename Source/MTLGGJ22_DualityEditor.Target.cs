@@ -10,5 +10,9 @@ public class MTLGGJ22_DualityEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("MTLGGJ22_Duality");
+
+		BuildEnvironment = TargetBuildEnvironment.Unique;
+		bCompileChaos = true;
+		bUseChaos = true;
 	}
 }

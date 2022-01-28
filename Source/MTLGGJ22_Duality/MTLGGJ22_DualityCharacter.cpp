@@ -28,7 +28,7 @@ AMTLGGJ22_DualityCharacter::AMTLGGJ22_DualityCharacter()
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 270.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
@@ -100,6 +100,7 @@ void AMTLGGJ22_DualityCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVe
 
 void AMTLGGJ22_DualityCharacter::TurnAtRate(float Rate)
 {
+	
 }
 
 void AMTLGGJ22_DualityCharacter::LookUpAtRate(float Rate)
@@ -114,7 +115,8 @@ void AMTLGGJ22_DualityCharacter::MoveForward(float Value)
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator PitchRotation(Rotation.Pitch, 0, 0);
+		
+		const FRotator PitchRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(PitchRotation).GetUnitAxis(EAxis::X);
@@ -129,13 +131,17 @@ void AMTLGGJ22_DualityCharacter::MoveRight(float Value)
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FRotator YawRoll(0, 0, Rotation.Roll);
 	
 		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FVector DirectionYaw = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+				
 		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		AddMovementInput(DirectionYaw, Value);
 
 		// calculate delta for this frame from the rate information
-		AddControllerYawInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+		//AddControllerYawInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+
+		//SetActorRotation(YawRoll);
 	}
 }
