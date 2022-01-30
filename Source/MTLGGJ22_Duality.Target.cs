@@ -10,5 +10,8 @@ public class MTLGGJ22_DualityTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("MTLGGJ22_Duality");
+		
+		bCompileChaos = true;
+		bUseChaos = true;
 	}
 }

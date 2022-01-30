@@ -63,10 +63,10 @@ void AMTLGGJ22_DualityCharacter::SetupPlayerInputComponent(class UInputComponent
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AMTLGGJ22_DualityCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AMTLGGJ22_DualityCharacter::LookUpAtRate);
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 
 	// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &AMTLGGJ22_DualityCharacter::TouchStarted);
@@ -88,6 +88,18 @@ void AMTLGGJ22_DualityCharacter::OnResetVR()
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
+void AMTLGGJ22_DualityCharacter::ChangeMovementToWalking()
+{
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
+}
+
+void AMTLGGJ22_DualityCharacter::ChangeMovementModeToFlying()
+{
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 25.0f, 0.0f);
+}
+
 void AMTLGGJ22_DualityCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		Jump();
@@ -100,7 +112,8 @@ void AMTLGGJ22_DualityCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVe
 
 void AMTLGGJ22_DualityCharacter::TurnAtRate(float Rate)
 {
-	
+	// calculate delta for this frame from the rate information
+	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 void AMTLGGJ22_DualityCharacter::LookUpAtRate(float Rate)
@@ -131,17 +144,16 @@ void AMTLGGJ22_DualityCharacter::MoveRight(float Value)
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-		const FRotator YawRoll(0, 0, Rotation.Roll);
 	
 		// get right vector 
-		const FVector DirectionYaw = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-				
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
-		AddMovementInput(DirectionYaw, Value);
+		AddMovementInput(Direction, Value);
+	}
 
+	if (GetCharacterMovement()->GetGroundMovementMode() == EMovementMode::MOVE_Flying)
+	{
 		// calculate delta for this frame from the rate information
-		//AddControllerYawInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds());
-
-		//SetActorRotation(YawRoll);
+		AddMovementInput(FollowCamera->GetForwardVector(), Value); 
 	}
 }
